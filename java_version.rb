@@ -1,5 +1,7 @@
 class JavaVersion
 
+  include Comparable
+
   class VersionFormatError < StandardError; end
 
   attr_accessor :family_number, :update_number
@@ -24,21 +26,20 @@ class JavaVersion
     return v
   end
 
-  def lt(target)
+  def <=>(target)
     if @family_number != target.family_number
-      return @family_number < target.family_number
+      return @family_number <=> target.family_number
     end
 
-    return @update_number < target.update_number
+    return @update_number <=> target.update_number
   end
 
-  # comparable '<=>' を使う！
-  def gt(target)
-    if @family_number != target.family_number
-      return @family_number > target.family_number
-    end
+  def lt(target)
+    self < target
+  end
 
-    return @update_number > target.update_number
+  def gt(target)
+    self > target
   end
 
   def next_limited_update
