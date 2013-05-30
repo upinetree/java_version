@@ -11,13 +11,7 @@ class JavaVersion
   LIMITED_UPDATE_STEP = 20
 
   def self.valid?(version_str)
-    begin
-      parse(version_str)
-    rescue
-      return false
-    else
-      return true
-    end
+    return vresion_str =~ REG_VERSION
   end
 
   def self.parse(version_str)
