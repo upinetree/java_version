@@ -11,17 +11,22 @@ class JavaVersion
   LIMITED_UPDATE_STEP = 20
 
   def self.valid?(version_str)
-    return version_str =~ REG_VERSION
+    begin
+      parse(version_str)
+    rescue
+      return false
+    else
+      return true
+    end
   end
 
   def self.parse(version_str)
-    raise VersionFormatError unless valid?(version_str)
-
-    version_str =~ REG_VERSION
+    versions = version_str.scan(REG_VERSION).first
+    raise VersionFormatError if versions.nil?
 
     v = self.new
-    v.family_number = $1.to_i
-    v.update_number = $2.to_i
+    v.family_number = versions[0].to_i
+    v.update_number = versions[1].to_i
 
     return v
   end
@@ -34,13 +39,8 @@ class JavaVersion
     return @update_number <=> target.update_number
   end
 
-  def lt(target)
-    self < target
-  end
-
-  def gt(target)
-    self > target
-  end
+  def lt(target); self < target; end
+  def gt(target); self > target; end
 
   def next_limited_update
     @update_number = (@update_number / LIMITED_UPDATE_STEP + 1 ) * LIMITED_UPDATE_STEP
